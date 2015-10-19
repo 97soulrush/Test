@@ -1,0 +1,38 @@
+<html>
+<head>
+  <meta http-equiv="refresh" content="5;url=index.php" />
+  <title>
+    <?php
+      if (isset($_POST)) {
+        echo "Thanks for registering!";
+      }
+    ?>
+  </title>
+</head>
+<body>
+<?php
+  if (isset($_POST)) {
+    include("../includes/sqlconnect.php");
+
+    $stmt = $conn->prepare("INSERT INTO User (Username, Password, FirstName, LastName, UserTypeID) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssi", $username, $password, $firstname, $lastname, $usertype);
+
+    $username = $_POST["email"];
+    $password = $_POST["pwd"];
+    $firstname = $_POST["firstname"];
+    $lastname = $_POST["lastname"];
+    $usertype = (int) $_POST["usertype"];
+
+    $stmt->execute();
+
+    echo "<h1>Thanks for registering!</h1>";
+    echo "<p>You have successfully registed for [teammoby]!<br>You should be redirected in a few seconds.";
+    $stmt->close();
+    $conn->close();
+  } else {
+    echo "<h1>Oops!</h1>";
+    echo "<p>This page doesn't exist!<br>You should be redirected in a few seconds.</p>";
+  }
+?>
+</body>
+</html>
